@@ -31,4 +31,30 @@ describe("Network Request", () => {
 
     cy.wait("@getComment").its("response.statusCode").should("eq", 200);
   });
+  it.only("Post Request", () => {
+    cy.intercept("POST", "/comments").as("postComment");
+
+    cy.get(".network-post").click();
+
+    cy.wait("@postComment").should(({ request, response }) => {
+      //console.log(request);
+
+      // RESPONSE
+      expect(request.body).to.include("email");
+
+      console.log(response);
+
+      expect(response.body).to.have.property(
+        "name",
+        "Using POST in cy.intercept()"
+      );
+
+      // REQUEST
+      expect(request.headers).to.have.property("content-type");
+      expect(request.headers).to.have.property(
+        "origin",
+        "https://example.cypress.io"
+      );
+    });
+  });
 });
