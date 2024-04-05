@@ -74,5 +74,7 @@ describe("Network Request", () => {
 
     cy.get(".network-put").click();
     cy.wait("@putComment");
+
+    cy.get(".network-put-comment").should("contain", message);
   });
 });
