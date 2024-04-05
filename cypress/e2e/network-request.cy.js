@@ -3,6 +3,7 @@
 /// <reference types="cypress" />
 
 describe("Network Request", () => {
+  let message = "Page cannot found!!";
   beforeEach(() => {
     cy.visit("https://example.cypress.io/commands/network-requests");
   });
@@ -31,7 +32,7 @@ describe("Network Request", () => {
 
     cy.wait("@getComment").its("response.statusCode").should("eq", 200);
   });
-  it.only("Post Request", () => {
+  it("Post Request", () => {
     cy.intercept("POST", "/comments").as("postComment");
 
     cy.get(".network-post").click();
@@ -56,5 +57,22 @@ describe("Network Request", () => {
         "https://example.cypress.io"
       );
     });
+  });
+  it.only("PUT Request", () => {
+    cy.intercept(
+      {
+        method: "PUT",
+        url: "**/comments/*",
+      },
+      {
+        statusCode: 404,
+        body: { error: message },
+        headers: { "access-control-allow-origin": "*" },
+        delay: 500,
+      }
+    ).as("putComment");
+
+    cy.get(".network-put").click();
+    cy.wait("@putComment");
   });
 });
